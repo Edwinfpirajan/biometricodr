@@ -1,0 +1,217 @@
+package controller
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/Edwinfpirajan/Distrifabrica.git/common"
+	"github.com/Edwinfpirajan/Distrifabrica.git/models"
+)
+
+// manejadorFormulario es una función que maneja la ruta para recibir los datos del formulario
+// y almacenarlos en la base de datos
+// func AsistenciaController(w http.ResponseWriter, r *http.Request) {
+// 	// common.SetCorsSetUp(w, r)
+
+// 	pinEmpleado := r.FormValue("pinEmpleado")
+// 	estado := r.FormValue("estado")
+// 	foto := r.FormValue("foto")
+
+// 	if pinEmpleado == "" || estado == "" || foto == "" {
+// 		http.Error(w, "Error al procesar los datos del formulario", http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	fmt.Println(pinEmpleado)
+// 	fmt.Println(estado)
+// 	fmt.Println(foto)
+
+// 	asistencia := models.Asistencia{PinEmpleado: pinEmpleado, Estado: estado, Foto: foto}
+
+// 	db := common.GetConnection()
+// 	defer db.Close()
+
+// 	if err := db.Create(&asistencia).Error; err != nil {
+// 		http.Error(w, "Error al almacenar los datos del formulario en la base de datos", http.StatusInternalServerError)
+// 		return
+// 	}
+// }
+
+// func AsistenciaController(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	var record models.Asistencia
+// 	_ = json.NewDecoder(r.Body).Decode(&record)
+// 	db := common.GetConnection()
+// 	defer db.Close()
+// 	record.CreatedAt = time.Now()
+
+// 	// Convierte la imagen a slice de bytes
+// 	image, err := base64.StdEncoding.DecodeString(string(record.Image))
+// 	if err != nil {
+// 		log.Println(err)
+// 		return
+// 	}
+// 	log.Println(image)
+// 	record.Image = image
+
+// 	db.Create(&record)
+// 	json.NewEncoder(w).Encode(record)
+// }
+
+// func AsistenciaController(w http.ResponseWriter, r *http.Request) {
+// 	var record models.Asistencia
+// 	err := json.NewDecoder(r.Body).Decode(&record)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// Obtiene la conexión a la base de datos
+// 	db := common.GetConnection()
+// 	defer db.Close()
+
+// 	// Insert the record into the database
+// 	if err := db.Exec("INSERT INTO asistencia (employee, arrival, image) VALUES (?, ?, ?)", record.Employee, record.Arrival, record.Image).Error; err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	w.WriteHeader(http.StatusCreated)
+// }
+
+// func AsistenciaController(w http.ResponseWriter, r *http.Request) {
+// 	// Abrir una conexión a la base de datos
+// 	db := common.GetConnection()
+// 	defer db.Close()
+
+// 	// Leer los datos del formulario
+// 	body, err := ioutil.ReadAll(r.Body)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// Deserializar los datos del formulario
+// 	var formData models.FormData
+// 	err = json.Unmarshal(body, &formData)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// Crear un nuevo registro en la tabla formulario
+// 	form := models.FormData{
+// 		PinEmpleado: formData.PinEmpleado,
+// 		Estado:      formData.Estado,
+// 		Foto:        formData.Foto,
+// 	}
+
+// 	err = db.Create(&form).Error
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// }
+
+// func AsistenciaController(w http.ResponseWriter, r *http.Request) {
+// 	// Abrir una conexión a la base de datos
+// 	db := common.GetConnection()
+// 	defer db.Close()
+
+// 	// Leer los datos del formulario
+// 	body, err := ioutil.ReadAll(r.Body)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// Deserializar los datos del formulario y mostrarlos en la consola
+// 	var formData models.FormData
+// 	err = json.Unmarshal(body, &formData)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	fmt.Println("Datos recibidos:", formData)
+
+// 	// Crear un nuevo registro en la tabla formulario
+// 	form := models.FormData{
+// 		PinEmpleado: formData.PinEmpleado,
+// 		Estado:      formData.Estado,
+// 		Foto:        formData.Foto,
+// 	}
+
+// 	err = db.Create(&form).Error
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	fmt.Println("Insertado registro:", form)
+// }
+
+func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
+	// Abrir una conexión a la base de datos
+	db := common.GetConnection()
+	defer db.Close()
+
+	// Leer los datos del formulario
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Deserializar los datos del formulario
+	var attendance models.Attendance
+	err = json.Unmarshal(body, &attendance)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// fmt.Println("este es el body", attendance)
+
+	form := models.Attendance{
+		PinEmploye: attendance.PinEmploye,
+		State:      attendance.State,
+		Photo:      attendance.Photo,
+	}
+
+	err = db.Create(&form).Error
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte("Registro creado exitosamente"))
+}
+
+// func AttendanceController(w http.ResponseWriter, r *http.Request) {
+// 	// Establecer el encabezado "Content-Type" de la respuesta a "application/json"
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	// Extraer los datos del formulario de la petición
+// 	var formData models.Attendance
+// 	if err := json.NewDecoder(r.Body).Decode(&formData); err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	fmt.Println(formData)
+
+// 	// Obtener una conexión a la base de datos y guardar los datos del formulario
+// 	db := common.GetConnection()
+// 	defer db.Close()
+// 	if err := db.Create(&formData).Error; err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	json.NewEncoder(w).Encode(struct{}{})
+
+// }
