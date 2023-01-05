@@ -89,3 +89,41 @@ func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
 	json, _ := json.Marshal(attendance)
 	common.SendResponse(w, http.StatusOK, json)
 }
+
+// func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
+// 	attendance := []models.Attendances{}
+// 	db := common.GetConnection()
+
+// 	db.Find(&attendance)
+// 	timeNow := time.Now()
+
+// 	for i := range attendance {
+
+// 		if attendance[i].Arrival == nil {
+// 			attendance[i].Arrival = &timeNow
+// 		}
+// 		if attendance[i].BreakIn == nil {
+// 			attendance[i].BreakIn = &timeNow
+// 		}
+// 		if attendance[i].BreakOut == nil {
+// 			attendance[i].BreakOut = &timeNow
+// 		}
+// 		if attendance[i].Departure == nil {
+// 			attendance[i].Departure = &timeNow
+
+// 			arrivalTime, _ := time.Parse("03:04:05 PM", attendance[i].Arrival.Format("03:04:05 PM"))
+// 			breakInTime, _ := time.Parse("03:04:05 PM", attendance[i].BreakIn.Format("03:04:05 PM"))
+// 			breakOutTime, _ := time.Parse("03:04:05 PM", attendance[i].BreakOut.Format("03:04:05 PM"))
+// 			departureTime, _ := time.Parse("03:04:05 PM", attendance[i].Departure.Format("03:04:05 PM"))
+
+// 			attendance[i].Arrival = &arrivalTime
+// 			attendance[i].BreakIn = &breakInTime
+// 			attendance[i].BreakOut = &breakOutTime
+// 			attendance[i].Departure = &departureTime
+// 		}
+
+// 		json, _ := json.Marshal(attendance)
+// 		common.SendResponse(w, http.StatusOK, json)
+// 	}
+
+// }
