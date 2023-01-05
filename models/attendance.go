@@ -11,12 +11,14 @@ import "time"
 // 	CreatedAt time.Time `json:"hora"`
 // }
 
-type Attendance struct {
-	ID         uint      `gorm:"primary_key"`
-	PinEmploye string    `json:"pinEmploye"`
-	State      string    `json:"state"`
-	Photo      string    `json:"photo"`
-	CreatedAt  time.Time `json:"time"`
+type Attendances struct {
+	ID           int        `json:"id" gorm:"primary_key;auto_increment"`
+	PinEmployeFK string     `json:"pinEmploye"`
+	Arrival      *time.Time `json:"arrival"`
+	BreakIn      *time.Time `json:"breakIn"`
+	BreakOut     *time.Time `json:"breakOut"`
+	Departure    *time.Time `json:"departure"`
+	Photo        string     `json:"photo"`
 }
 
 // type FormData struct {

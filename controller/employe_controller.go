@@ -15,7 +15,6 @@ import (
 func GetAll(writer http.ResponseWriter, request *http.Request) {
 	employes := []models.Employe{}
 	db := common.GetConnection()
-	defer db.Close()
 
 	db.Find(&employes)
 	json, _ := json.Marshal(employes)
@@ -28,7 +27,6 @@ func Get(writer http.ResponseWriter, request *http.Request) {
 	id := mux.Vars(request)["id"]
 
 	db := common.GetConnection()
-	defer db.Close()
 
 	db.Find(&employe, id)
 
@@ -72,7 +70,6 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 	employe := models.Employe{}
 
 	db := common.GetConnection()
-	defer db.Close()
 
 	error := json.NewDecoder(request.Body).Decode(&employe)
 
@@ -82,12 +79,9 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// Genera un slice de 8 bytes aleatorios
-	// Genera un slice de 4 bytes aleatorios
 	randomBytes := make([]byte, 2)
 	_, err := rand.Read(randomBytes)
 	if err != nil {
-		// maneja el error
 	}
 
 	// Convierte los bytes a una cadena hexadecimal
@@ -111,7 +105,6 @@ func Delete(writer http.ResponseWriter, request *http.Request) {
 	employe := models.Employe{}
 
 	db := common.GetConnection()
-	defer db.Close()
 
 	id := mux.Vars(request)["id"]
 

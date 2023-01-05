@@ -3,31 +3,33 @@ package common
 import (
 	"log"
 
-	"github.com/Edwinfpirajan/Distrifabrica.git/models"
-	"github.com/jinzhu/gorm"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func GetConnection() *gorm.DB {
-	db, error := gorm.Open("mysql", "root:@/distridb?charset=utf8&parseTime=True&loc=Local")
+	dsn := "root:@/distridb?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		// Logger: logger.Default.LogMode(logger.Info),
+	})
 
-	if error != nil {
-		log.Fatal(error)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return db
 }
 
-func Migrate() {
-	db := GetConnection()
+// func Migrate() {
+// 	db := GetConnection()
 
-	defer db.Close()
-	log.Println("Iniciando...")
+// 	log.Println("Iniciando...")
 
-	db.AutoMigrate(
-		&models.Employe{},
-		&models.Attendance{},
-		&models.User{},
-		&models.Account{})
-}
+// 	db.AutoMigrate(
+// 		&models.Employe{},
+// 		&models.Attendances{},
+// 		&models.User{},
+// 		&models.Account{},
+// 		// &models.Horary{},
+// 	)
+// }

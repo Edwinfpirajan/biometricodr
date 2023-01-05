@@ -14,9 +14,9 @@ func Login(username string, pass string) map[string]interface{} {
 	user := &models.User{}
 	// sql := "SELECT * FROM users WHERE username'" + user.Username + "'and password ='" + user.Password + "'"
 
-	if db.Where("username = ?", username).First(&user).RecordNotFound() {
-		return map[string]interface{}{"message": "Usuario no encontrado"}
-	}
+	// if db.Where("username = ?", username).First(&user).RecordNotFound() {
+	// 	return map[string]interface{}{"message": "Usuario no encontrado"}
+	// }
 
 	passErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
 
@@ -36,8 +36,6 @@ func Login(username string, pass string) map[string]interface{} {
 		Username: user.Username,
 		Accounts: accounts,
 	}
-
-	defer db.Close()
 
 	fmt.Println(responseUser)
 
