@@ -20,6 +20,12 @@ func SetRoutes(router *mux.Router) {
 	subRoute.HandleFunc("/attendance", controller.GetAllAttendance).Methods("GET")
 	subRoute.HandleFunc("/employes/pin/{pin}", controller.GetAllAttendance).Methods("GET")
 
+	// SCHEDULE CONTROLLER
+
+	subRoute.HandleFunc("/schedule", controller.GetAllSchedule).Methods("GET")
+	subRoute.HandleFunc("/schedule/save", controller.SaveSchedule).Methods("POST")
+	subRoute.HandleFunc("/schedule/delete/{id}", controller.DeleteSchedule).Methods("POST")
+
 	//LOGIN CONTROLLER
 	subRoute.HandleFunc("/login", api.Logeo).Methods("POST")
 }

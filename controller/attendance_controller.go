@@ -27,7 +27,6 @@ func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// PIN VALIDATE
 	var employe models.Employe
 	if err := db.Where("pin_employe = ?", attendance.PinEmployeFK).First(&employe).Error; err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -3,6 +3,7 @@ package common
 import (
 	"log"
 
+	"github.com/Edwinfpirajan/Distrifabrica.git/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -20,16 +21,16 @@ func GetConnection() *gorm.DB {
 	return db
 }
 
-// func Migrate() {
-// 	db := GetConnection()
+func Migrate() {
+	db := GetConnection()
 
-// 	log.Println("Iniciando...")
+	log.Println("Iniciando...")
 
-// 	db.AutoMigrate(
-// 		&models.Employe{},
-// 		&models.Attendances{},
-// 		&models.User{},
-// 		&models.Account{},
-// 		// &models.Horary{},
-// 	)
-// }
+	db.AutoMigrate(
+		// &models.Employe{},
+		// &models.Attendances{},
+		// &models.User{},
+		// &models.Account{},
+		&models.Horary{},
+	)
+}

@@ -39,33 +39,6 @@ func Get(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-// func Save(writer http.ResponseWriter, request *http.Request) {
-// 	employe := models.Employe{}
-
-// 	db := common.GetConnection()
-// 	defer db.Close()
-
-// 	error := json.NewDecoder(request.Body).Decode(&employe)
-
-// 	if error != nil {
-// 		log.Fatal(error)
-// 		common.SendError(writer, http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	error = db.Save(&employe).Error
-
-// 	if error != nil {
-// 		log.Fatal(error)
-// 		common.SendError(writer, http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	json, _ := json.Marshal(employe)
-
-// 	common.SendResponse(writer, http.StatusCreated, json)
-// }
-
 func Save(writer http.ResponseWriter, request *http.Request) {
 	employe := models.Employe{}
 

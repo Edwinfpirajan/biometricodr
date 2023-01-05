@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	// common.Migrate()
+	common.Migrate()
 	// controller.Query(common.GetConnection(), 3)
 	router := mux.NewRouter()
 	routes.SetRoutes(router)
