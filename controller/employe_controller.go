@@ -12,14 +12,57 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// func GetAll(writer http.ResponseWriter, request *http.Request) {
+// 	employes := []models.Employe{}
+// 	db := common.GetConnection()
+
+// 	db.Find(&employes)
+// 	json, _ := json.Marshal(employes)
+// 	common.SendResponse(writer, http.StatusOK, json)
+// }
+
 func GetAll(writer http.ResponseWriter, request *http.Request) {
 	employes := []models.Employe{}
 	db := common.GetConnection()
 
+	// db.Raw("SELECT * FROM employes e LEFT JOIN horaries h ON h.id = e.schedule_id").Scan(&employes)
+	db.Model(&employes).Select("*").Joins("left join horaries h on h.id = employes.schedule_id").Scan(&employes)
 	db.Find(&employes)
 	json, _ := json.Marshal(employes)
 	common.SendResponse(writer, http.StatusOK, json)
 }
+
+// func GetAll(writer http.ResponseWriter, request *http.Request) {
+// 	type EmployeeWithSchedule struct {
+// 		models.Employe
+// 		Arrival   string
+// 		Departure string
+// 	}
+
+// 	employeesWithSchedule := []EmployeeWithSchedule{}
+// 	db := common.GetConnection()
+
+// 	db.Joins("JOIN horaries ON horaries.id = employes.schedule_id").Find(&employeesWithSchedule)
+// 	json, _ := json.Marshal(employeesWithSchedule)
+// 	common.SendResponse(writer, http.StatusOK, json)
+// }
+
+// func Get(writer http.ResponseWriter, request *http.Request) {
+// 	employe := models.Employe{}
+
+// 	id := mux.Vars(request)["id"]
+
+// 	db := common.GetConnection()
+
+// 	db.Find(&employe, id)
+
+// 	if employe.ID > 0 {
+// 		json, _ := json.Marshal(employe)
+// 		common.SendResponse(writer, http.StatusOK, json)
+// 	} else {
+// 		common.SendError(writer, http.StatusNotFound)
+// 	}
+// }
 
 func Get(writer http.ResponseWriter, request *http.Request) {
 	employe := models.Employe{}
@@ -30,14 +73,50 @@ func Get(writer http.ResponseWriter, request *http.Request) {
 
 	db.Find(&employe, id)
 
+	db.Select("*").Joins("left join horaries h on h.id = employes.schedule_id").Find(&employe, id)
+
 	if employe.ID > 0 {
 		json, _ := json.Marshal(employe)
 		common.SendResponse(writer, http.StatusOK, json)
 	} else {
 		common.SendError(writer, http.StatusNotFound)
 	}
-
 }
+
+// func Save(writer http.ResponseWriter, request *http.Request) {
+// 	employe := models.Employe{}
+
+// 	db := common.GetConnection()
+
+// 	error := json.NewDecoder(request.Body).Decode(&employe)
+
+// 	if error != nil {
+// 		log.Fatal(error)
+// 		common.SendError(writer, http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	randomBytes := make([]byte, 2)
+// 	_, err := rand.Read(randomBytes)
+// 	if err != nil {
+// 	}
+
+// 	// Convierte los bytes a una cadena hexadecimal
+// 	employe.PinEmploye = hex.EncodeToString(randomBytes)
+
+// 	// Guarda el empleado en la base de datos
+// 	error = db.Save(&employe).Error
+
+// 	if error != nil {
+// 		log.Fatal(error)
+// 		common.SendError(writer, http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	json, _ := json.Marshal(employe)
+
+// 	common.SendResponse(writer, http.StatusCreated, json)
+// }
 
 func Save(writer http.ResponseWriter, request *http.Request) {
 	employe := models.Employe{}
@@ -59,6 +138,19 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 
 	// Convierte los bytes a una cadena hexadecimal
 	employe.PinEmploye = hex.EncodeToString(randomBytes)
+
+	// Incluye los datos de la tabla Horary en el objeto employe
+	horary := models.Horary{Arrival: employe.Arrival, Departure: employe.Departure}
+	error = db.Save(&horary).Error
+
+	if error != nil {
+		log.Fatal(error)
+		common.SendError(writer, http.StatusInternalServerError)
+		return
+	}
+
+	// Asigna el ID de la tabla Horary al objeto employe
+	employe.ScheduleId = horary.ID
 
 	// Guarda el empleado en la base de datos
 	error = db.Save(&employe).Error
