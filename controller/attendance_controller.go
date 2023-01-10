@@ -87,6 +87,7 @@ func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
 	db.Find(&attendance)
 	json, _ := json.Marshal(attendance)
 	common.SendResponse(w, http.StatusOK, json)
+	// fmt.Println(attendance)
 }
 
 // func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
