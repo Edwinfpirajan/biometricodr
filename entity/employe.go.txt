@@ -1,0 +1,9 @@
+package entity
+
+import "time"
+
+type EmployeeWithSchedule struct {
+	models.Employe
+	Arrival   string `json:"arrival"`
+	Departure string `json:"departure"`
+}
