@@ -39,7 +39,7 @@ func GetAll(writer http.ResponseWriter, request *http.Request) {
 	employeesWithSchedule := []models.EmployeeWithSchedule{}
 	db := common.GetConnection()
 	// db.Raw("SELECT * FROM employes e INNER JOIN horaries h ON h.id = e.schedule_id").Find(&employeesWithSchedule)
-	db.Table("employes").Select("*").Joins("left join horaries h on h.id = employes.schedule_id").Scan(&employeesWithSchedule)
+	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Scan(&employeesWithSchedule)
 	fmt.Println("consulta: ", employeesWithSchedule)
 	json, _ := json.Marshal(employeesWithSchedule)
 	common.SendResponse(writer, http.StatusOK, json)

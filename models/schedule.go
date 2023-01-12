@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Horary struct {
-	ID        int       `json:"id" gorm:"primary_key;auto_increment"`
+	Id_sch    int       `json:"id_sch" gorm:"primary_key;auto_increment"`
 	Arrival   time.Time `json:"arrival"`
 	Departure time.Time `json:"departure"`
 }
