@@ -13,7 +13,7 @@ func SetRoutes(router *mux.Router) {
 	subRoute.HandleFunc("/all", controller.GetAll).Methods("GET")
 	subRoute.HandleFunc("/save", controller.Save).Methods("POST")
 	subRoute.HandleFunc("/delete/{id}", controller.Delete).Methods("POST")
-	// subRoute.HandleFunc("/find/{id}", controller.Get).Methods("GET")
+	subRoute.HandleFunc("/find/{id}", controller.Get).Methods("GET")
 
 	// ATTENDANCE CONTROLLER
 	subRoute.HandleFunc("/register", controller.SaveRegisterttendance).Methods("POST")

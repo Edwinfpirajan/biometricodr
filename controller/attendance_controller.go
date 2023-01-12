@@ -40,7 +40,6 @@ func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if validateAttendance.ID == 0 {
-
 		modelsAttendance := models.Attendances{
 			PinEmployeFK: attendance.PinEmployeFK,
 			Photo:        attendance.Photo,
@@ -89,41 +88,3 @@ func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
 	common.SendResponse(w, http.StatusOK, json)
 	// fmt.Println(attendance)
 }
-
-// func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
-// 	attendance := []models.Attendances{}
-// 	db := common.GetConnection()
-
-// 	db.Find(&attendance)
-// 	timeNow := time.Now()
-
-// 	for i := range attendance {
-
-// 		if attendance[i].Arrival == nil {
-// 			attendance[i].Arrival = &timeNow
-// 		}
-// 		if attendance[i].BreakIn == nil {
-// 			attendance[i].BreakIn = &timeNow
-// 		}
-// 		if attendance[i].BreakOut == nil {
-// 			attendance[i].BreakOut = &timeNow
-// 		}
-// 		if attendance[i].Departure == nil {
-// 			attendance[i].Departure = &timeNow
-
-// 			arrivalTime, _ := time.Parse("03:04:05 PM", attendance[i].Arrival.Format("03:04:05 PM"))
-// 			breakInTime, _ := time.Parse("03:04:05 PM", attendance[i].BreakIn.Format("03:04:05 PM"))
-// 			breakOutTime, _ := time.Parse("03:04:05 PM", attendance[i].BreakOut.Format("03:04:05 PM"))
-// 			departureTime, _ := time.Parse("03:04:05 PM", attendance[i].Departure.Format("03:04:05 PM"))
-
-// 			attendance[i].Arrival = &arrivalTime
-// 			attendance[i].BreakIn = &breakInTime
-// 			attendance[i].BreakOut = &breakOutTime
-// 			attendance[i].Departure = &departureTime
-// 		}
-
-// 		json, _ := json.Marshal(attendance)
-// 		common.SendResponse(w, http.StatusOK, json)
-// 	}
-
-// }
