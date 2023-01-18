@@ -8,7 +8,6 @@ type User struct {
 	gorm.Model
 	Username string `json:"user" `
 	Password string `json:"pass" `
-	// Accounts []Account
 }
 
 type Account struct {

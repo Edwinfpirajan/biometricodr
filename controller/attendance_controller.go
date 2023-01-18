@@ -13,7 +13,6 @@ import (
 
 func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
 	db := common.GetConnection()
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -80,11 +79,40 @@ func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllAttendance(w http.ResponseWriter, r *http.Request) {
-	attendance := []models.Attendances{}
 	db := common.GetConnection()
+	attendance := []models.GetAllAttendances{}
 
-	db.Find(&attendance)
+	db.Table("attendances").Select("*").Joins("INNER JOIN employes e on e.pin_employe = attendances.pin_employe_fk").Find(&attendance)
+
 	json, _ := json.Marshal(attendance)
 	common.SendResponse(w, http.StatusOK, json)
-	// fmt.Println(attendance)
+}
+
+//VALIDATIONS
+
+func ValidateHorary(w http.ResponseWriter, r *http.Request) {
+	db := common.GetConnection()
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var validateHorary entity.ValidateHorary
+	err = json.Unmarshal(body, &validateHorary)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var arrival time.Time
+
+	// db.Table("attendances").Where("pin_employe_fk = ? and arrival = ?", validateHorary.PinEmployeFK, validateHorary.Date).Scan(&attendances)
+	db.Raw("select arrival from attendances a where pin_employe_fk = ? and date_format(arrival, '%d-%m-%Y') = date_format(?, '%d-%m-%Y')",
+		validateHorary.PinEmployeFK, validateHorary.Date).Scan(&arrival)
+
+	json, _ := json.Marshal(arrival)
+	common.SendResponse(w, http.StatusOK, json)
+
 }

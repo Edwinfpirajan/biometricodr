@@ -18,7 +18,19 @@ type Attendances struct {
 	BreakIn      *time.Time `json:"breakIn"`
 	BreakOut     *time.Time `json:"breakOut"`
 	Departure    *time.Time `json:"departure"`
+	CreatedAt    time.Time  `json:"date"`
 	Photo        string     `json:"photo"`
+}
+
+type GetAllAttendances struct {
+	EmployeeWithSchedule
+	Attendances
+	// CreatedAt time.Time  `json:"date"`
+	// Arrival   string     `json:"arrival"`
+	// BreakIn   *time.Time `json:"breakIn"`
+	// BreakOut  *time.Time `json:"breakOut"`
+	// Departure string     `json:"departure"`
+	// Photo     string     `json:"photo"`
 }
 
 // type FormData struct {

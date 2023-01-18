@@ -2,7 +2,6 @@ package controller
 
 import (
 	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -16,10 +15,11 @@ import (
 func GetAll(writer http.ResponseWriter, request *http.Request) {
 	employeesWithSchedule := []models.EmployeeWithSchedule{}
 	db := common.GetConnection()
-	// db.Raw("SELECT * FROM employes e INNER JOIN horaries h ON h.id = e.schedule_id").Find(&employeesWithSchedule)
 	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Scan(&employeesWithSchedule)
-	fmt.Println("consulta: ", employeesWithSchedule)
 	json, _ := json.Marshal(employeesWithSchedule)
+
+	// t, _ := time.Parse("15:04", employeesWithSchedule[0].Horary.Arrival)
+	// t.Add()
 	common.SendResponse(writer, http.StatusOK, json)
 }
 
@@ -32,7 +32,7 @@ func Get(writer http.ResponseWriter, request *http.Request) {
 	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Where("employes.id = ?", id).First(&employeeWithSchedule)
 
 	if employeeWithSchedule.ID == 0 {
-		common.SendError(writer, http.StatusNotFound)
+		common.SendError(writer, http.StatusNotFound, fmt.Errorf(""))
 		return
 	}
 
@@ -47,32 +47,43 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 
 	if error != nil {
 		log.Fatal(error)
-		common.SendError(writer, http.StatusBadRequest)
+		common.SendError(writer, http.StatusBadRequest, error)
 		return
 	}
 
-	randomBytes := make([]byte, 2)
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		log.Fatal(error)
-		common.SendError(writer, http.StatusBadRequest)
-		return
-	}
+	// Generate two random numbers
+	num1 := make([]byte, 1)
+	rand.Read(num1)
+	num1[0] = num1[0]%10 + 48
 
-	employe.PinEmploye = hex.EncodeToString(randomBytes)
-	// horary := models.Employe{Arrival: employe.Arrival, Departure: employe.Departure}
-	// error = db.Save(&horary).Error
+	num2 := make([]byte, 1)
+	rand.Read(num2)
+	num2[0] = num2[0]%10 + 48
+
+	// Generate two random uppercase letters
+	letter1 := make([]byte, 1)
+	rand.Read(letter1)
+	letter1[0] = letter1[0]%26 + 65
+
+	letter2 := make([]byte, 1)
+	rand.Read(letter2)
+	letter2[0] = letter2[0]%26 + 65
+
+	// Concatenate the numbers and letters to create the pin
+	pin := fmt.Sprintf("%c%c%d%d", letter1[0], letter2[0], num1[0]-48, num2[0]-48)
+
+	employe.PinEmploye = pin
+
 	if error != nil {
 		log.Fatal(error)
-		common.SendError(writer, http.StatusInternalServerError)
+		common.SendError(writer, http.StatusInternalServerError, error)
 		return
 	}
 
-	// employe.ScheduleId = horary.ID
 	error = db.Save(&employe).Error
 	if error != nil {
 		log.Fatal(error)
-		common.SendError(writer, http.StatusInternalServerError)
+		common.SendError(writer, http.StatusInternalServerError, error)
 		return
 	}
 	json, _ := json.Marshal(employe)
@@ -89,6 +100,6 @@ func Delete(writer http.ResponseWriter, request *http.Request) {
 		db.Delete(employe)
 		common.SendResponse(writer, http.StatusOK, []byte(`{}`))
 	} else {
-		common.SendError(writer, http.StatusNotFound)
+		common.SendError(writer, http.StatusNotFound, fmt.Errorf(""))
 	}
 }

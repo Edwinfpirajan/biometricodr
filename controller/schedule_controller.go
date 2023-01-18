@@ -2,11 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/Edwinfpirajan/Distrifabrica.git/common"
+	"github.com/Edwinfpirajan/Distrifabrica.git/entity"
 	"github.com/Edwinfpirajan/Distrifabrica.git/models"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 )
 
 func GetAllSchedule(writer http.ResponseWriter, request *http.Request) {
@@ -15,95 +18,81 @@ func GetAllSchedule(writer http.ResponseWriter, request *http.Request) {
 	db.Find(&schedule)
 	json, _ := json.Marshal(schedule)
 	common.SendResponse(writer, http.StatusOK, json)
+	// fmt.Println(schedule)
 }
 
-// func SaveSchedule(w http.ResponseWriter, r *http.Request) {
+func GetScheduleById(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
 
-// 	schedule := models.Horary{}
+	var schedule models.Horary
+	db := common.GetConnection()
 
-// 	db := common.GetConnection()
+	db.First(&schedule, id)
 
-// 	error := json.NewDecoder(r.Body).Decode(&schedule)
+	if schedule.Id_sch == 0 {
+		common.SendError(w, http.StatusNotFound, fmt.Errorf(""))
+		return
+	}
 
-// 	if error != nil {
-// 		common.SendError(w, http.StatusBadRequest)
-// 		return
-// 	}
+	json, _ := json.Marshal(schedule)
+	common.SendResponse(w, http.StatusOK, json)
+}
 
-// 	db.Create(&schedule)
-// 	fmt.Println("consulta: ", schedule)
-// 	json, _ := json.Marshal(schedule)
-// 	common.SendResponse(w, http.StatusOK, json)
+//****************************************PARSER TIME
 
-// }
+func saveSchedule(horary entity.Horary) (models.Horary, error) {
+
+	schedule := models.Horary{}
+
+	schedule.Id_sch = horary.Id_sch
+
+	schedule.Arrival = horary.Arrival
+
+	schedule.Departure = horary.Departure
+
+	db := common.GetConnection()
+	db.Save(&schedule)
+	return schedule, nil
+}
 
 func SaveSchedule(w http.ResponseWriter, r *http.Request) {
-	requestBody := map[string]string{}
+	requestBody := entity.Horary{}
 	error := json.NewDecoder(r.Body).Decode(&requestBody)
 	if error != nil {
-		common.SendError(w, http.StatusBadRequest)
+		common.SendError(w, http.StatusBadRequest, error.Error())
 		return
 	}
 
-	arrival, ok := requestBody["arrival"]
-	if !ok {
-		common.SendError(w, http.StatusBadRequest)
-		return
-	}
-
-	t, err := time.Parse("15:04", arrival)
+	schedule, err := saveSchedule(requestBody)
 	if err != nil {
-		common.SendError(w, http.StatusBadRequest)
+		common.SendError(w, http.StatusBadRequest, error)
 		return
 	}
-
-	now := time.Now()
-	schedule := models.Horary{}
-	schedule.Arrival = time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), time.Local)
-	departure, ok := requestBody["departure"]
-	if !ok {
-		common.SendError(w, http.StatusBadRequest)
-		return
-	}
-
-	t, err = time.Parse("15:04", departure)
-	if err != nil {
-		common.SendError(w, http.StatusBadRequest)
-		return
-	}
-
-	schedule.Departure = time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), time.Local)
-	db := common.GetConnection()
-	db.Save(&schedule)
 	json, _ := json.Marshal(schedule)
 	common.SendResponse(w, http.StatusOK, json)
-}
-
-func UpdateSchedule(w http.ResponseWriter, r *http.Request) {
-	schedule := models.Horary{}
-	db := common.GetConnection()
-	error := json.NewDecoder(r.Body).Decode(&schedule)
-	if error != nil {
-		common.SendError(w, http.StatusBadRequest)
-		return
-	}
-
-	db.Save(&schedule)
-	json, _ := json.Marshal(schedule)
-	common.SendResponse(w, http.StatusOK, json)
-
 }
 
 func DeleteSchedule(w http.ResponseWriter, r *http.Request) {
-	schedule := models.Horary{}
+	vars := mux.Vars(r)
+	id := vars["id"]
+
 	db := common.GetConnection()
-	error := json.NewDecoder(r.Body).Decode(&schedule)
-	if error != nil {
-		common.SendError(w, http.StatusBadRequest)
+
+	var schedule models.Horary
+	if err := db.First(&schedule, id).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	db.Delete(&schedule)
-	json, _ := json.Marshal(schedule)
-	common.SendResponse(w, http.StatusOK, json)
+	if err := db.Delete(&schedule).Error; err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

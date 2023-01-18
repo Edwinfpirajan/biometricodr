@@ -1,6 +1,7 @@
 package common
 
 import (
+	"encoding/json"
 	"net/http"
 
 	// "golang.org/x/crypto/bcrypt"
@@ -17,13 +18,13 @@ func SendResponse(writer http.ResponseWriter, status int, data []byte) {
 	writer.Write(data)
 }
 
-func SendError(writer http.ResponseWriter, status int) {
-	data := []byte(`{}`)
+func SendError(writer http.ResponseWriter, status int, data interface{}) {
+	dataError, _ := json.Marshal(data)
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	writer.WriteHeader(status)
-	writer.Write(data)
+	writer.Write(dataError)
 }
 
 func SetCorsSetUp(next http.Handler) http.Handler {
