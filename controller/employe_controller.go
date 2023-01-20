@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/Edwinfpirajan/Distrifabrica.git/common"
@@ -46,7 +45,6 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 	error := json.NewDecoder(request.Body).Decode(&employe)
 
 	if error != nil {
-		log.Fatal(error)
 		common.SendError(writer, http.StatusBadRequest, error)
 		return
 	}
@@ -75,14 +73,12 @@ func Save(writer http.ResponseWriter, request *http.Request) {
 	employe.PinEmploye = pin
 
 	if error != nil {
-		log.Fatal(error)
 		common.SendError(writer, http.StatusInternalServerError, error)
 		return
 	}
 
 	error = db.Save(&employe).Error
 	if error != nil {
-		log.Fatal(error)
 		common.SendError(writer, http.StatusInternalServerError, error)
 		return
 	}

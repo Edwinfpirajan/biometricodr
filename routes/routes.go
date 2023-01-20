@@ -14,6 +14,7 @@ func SetRoutes(router *mux.Router) {
 	subRoute.HandleFunc("/save", controller.Save).Methods("POST")
 	subRoute.HandleFunc("/delete/{id}", controller.Delete).Methods("POST")
 	subRoute.HandleFunc("/find/{id}", controller.Get).Methods("GET")
+	subRoute.HandleFunc("/validate/{pin}", controller.ValidateEmploye).Methods("GET")
 
 	// ATTENDANCE CONTROLLER
 	subRoute.HandleFunc("/register", controller.SaveRegisterttendance).Methods("POST")
