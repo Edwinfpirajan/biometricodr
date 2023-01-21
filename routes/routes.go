@@ -1,37 +1,25 @@
 package routes
 
 import (
-	"github.com/Edwinfpirajan/Distrifabrica.git/api"
+	"github.com/Edwinfpirajan/Distrifabrica.git/common"
 	"github.com/Edwinfpirajan/Distrifabrica.git/controller"
 	"github.com/gorilla/mux"
 )
 
 func SetRoutes(router *mux.Router) {
 	subRoute := router.PathPrefix("/api").Subrouter()
+	router.HandleFunc("/login", controller.Login).Methods("POST")
 
-	// EMPLOYE CONTROLLER
-	subRoute.HandleFunc("/all", controller.GetAll).Methods("GET")
-	subRoute.HandleFunc("/save", controller.Save).Methods("POST")
-	subRoute.HandleFunc("/delete/{id}", controller.Delete).Methods("POST")
-	subRoute.HandleFunc("/find/{id}", controller.Get).Methods("GET")
-	subRoute.HandleFunc("/validate/{pin}", controller.ValidateEmploye).Methods("GET")
+	subRoute.HandleFunc("/all", common.AuthMiddleware(controller.GetAll)).Methods("GET")
+	subRoute.HandleFunc("/save", common.AuthMiddleware(controller.Save)).Methods("POST")
+	subRoute.HandleFunc("/delete/{id}", common.AuthMiddleware(controller.Delete)).Methods("POST")
+	subRoute.HandleFunc("/find/{id}", common.AuthMiddleware(controller.Get)).Methods("GET")
 
-	// ATTENDANCE CONTROLLER
-	subRoute.HandleFunc("/register", controller.SaveRegisterttendance).Methods("POST")
-	subRoute.HandleFunc("/attendance", controller.GetAllAttendance).Methods("GET")
-	subRoute.HandleFunc("/attendance/validate", controller.ValidateHorary).Methods("POST")
+	subRoute.HandleFunc("/register", common.AuthMiddleware(controller.SaveRegisterttendance)).Methods("POST")
+	subRoute.HandleFunc("/attendance", common.AuthMiddleware(controller.GetAllAttendance)).Methods("GET")
+	subRoute.HandleFunc("/attendance/validate", common.AuthMiddleware(controller.ValidateHorary)).Methods("POST")
 
-	// SCHEDULE CONTROLLER
-
-	subRoute.HandleFunc("/schedule/all", controller.GetAllSchedule).Methods("GET")
-	subRoute.HandleFunc("/schedule/save", controller.SaveSchedule).Methods("POST")
-	// subRoute.HandleFunc("/schedule/delete/{id}", controller.DeleteSchedule).Methods("POST")
-	subRoute.HandleFunc("/schedule/delete/{id}", controller.DeleteSchedule).Methods("DELETE")
-
-	//
-
-	//LOGIN CONTROLLER
-	subRoute.HandleFunc("/login", api.Logeo).Methods("POST")
-
-	// subRoute.Use()
+	subRoute.HandleFunc("/schedule/all", common.AuthMiddleware(controller.GetAllSchedule)).Methods("GET")
+	subRoute.HandleFunc("/schedule/save", common.AuthMiddleware(controller.SaveSchedule)).Methods("POST")
+	subRoute.HandleFunc("/schedule/delete/{id}", common.AuthMiddleware(controller.DeleteSchedule)).Methods("DELETE")
 }

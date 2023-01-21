@@ -9,7 +9,6 @@ import (
 	"github.com/Edwinfpirajan/Distrifabrica.git/common"
 	"github.com/Edwinfpirajan/Distrifabrica.git/entity"
 	"github.com/Edwinfpirajan/Distrifabrica.git/models"
-	"github.com/gorilla/mux"
 )
 
 func SaveRegisterttendance(w http.ResponseWriter, r *http.Request) {
@@ -116,20 +115,4 @@ func ValidateHorary(w http.ResponseWriter, r *http.Request) {
 	json, _ := json.Marshal(arrival)
 	common.SendResponse(w, http.StatusOK, json)
 
-}
-
-func ValidateEmploye(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	pin := params["pin"]
-
-	db := common.GetConnection()
-
-	var employe models.Employe
-	db.Where("pin_employe = ?", pin).First(&employe)
-
-	if employe.ID == 0 {
-		json.NewEncoder(w).Encode(false)
-	} else {
-		json.NewEncoder(w).Encode(true)
-	}
 }
