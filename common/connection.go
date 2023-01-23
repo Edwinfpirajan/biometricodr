@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"gorm.io/driver/mysql"
@@ -23,16 +22,16 @@ func GetConnection() *gorm.DB {
 	return db
 }
 
-func Migrate() {
-	db := GetConnection()
+// func Migrate() {
+// 	db := GetConnection()
 
-	log.Println("Iniciando...")
+// 	log.Println("Iniciando...")
 
-	db.AutoMigrate(
-	// &models.Employe{},
-	// &models.Attendances{},
-	// &models.User{},
-	// &models.Account{},
-	// &models.Horary{},
-	)
-}
+// 	db.AutoMigrate(
+// 	// &models.Employe{},
+// 	// &models.Attendances{},
+// 	// &models.User{},
+// 	// &models.Account{},
+// 	// &models.Horary{},
+// 	)
+// }

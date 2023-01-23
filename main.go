@@ -1,28 +1,28 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
-	"github.com/Edwinfpirajan/Distrifabrica.git/common"
 	"github.com/Edwinfpirajan/Distrifabrica.git/routes"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
-	common.Migrate()
+	// common.Migrate()
 	// controller.Query(common.GetConnection(), 3)
-	router := mux.NewRouter()
-	routes.SetRoutes(router)
-	common.EnableCORS(router)
+	// router := mux.NewRouter()
+	// routes.SetRoutes(router)
 	// common.Login("", "")
 
-	server := http.Server{
-		Addr:    ":3001",
-		Handler: router,
-	}
+	e := echo.New()
+	routes.EchoRoutes(e)
 
-	log.Println("Servidor ejecutandose: ", server.Addr)
-	log.Println(server.ListenAndServe())
+	e.Logger.Fatal(e.Start(":3001"))
+
+	// server := http.Server{
+	// 	Addr:    ":3001",
+	// 	Handler: router,
+	// }
+
+	// log.Println("Servidor ejecutandose: ", server.Addr)
+	// log.Println(server.ListenAndServe())
 
 }

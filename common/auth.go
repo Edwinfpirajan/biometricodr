@@ -2,24 +2,19 @@ package common
 
 import (
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func OnlyAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
 
-		authHeader := r.Header.Get("Authorization")
+		authHeader := c.Request().Header.Get("authorization")
 
-		if authHeader != "secret_token" {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
-			return
+		if authHeader == "" || authHeader[:6] != "Bearer" {
+			return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token")
 		}
 
-		next.ServeHTTP(w, r)
-	})
+		return next(c)
+	}
 }
-
-// func CheckPasswordHash(password, hash string) bool {
-// 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-// 	return err == nil
-// }

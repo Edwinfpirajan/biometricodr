@@ -1,42 +1,20 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/Edwinfpirajan/Distrifabrica.git/common"
 	"github.com/Edwinfpirajan/Distrifabrica.git/entity"
 	"github.com/Edwinfpirajan/Distrifabrica.git/models"
-	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/labstack/echo/v4"
 )
 
-func GetAllSchedule(writer http.ResponseWriter, request *http.Request) {
+func GetAllSchedule(c echo.Context) error {
 	schedule := []models.Horary{}
 	db := common.GetConnection()
 	db.Find(&schedule)
-	json, _ := json.Marshal(schedule)
-	common.SendResponse(writer, http.StatusOK, json)
-	// fmt.Println(schedule)
-}
-
-func GetScheduleById(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
-
-	var schedule models.Horary
-	db := common.GetConnection()
-
-	db.First(&schedule, id)
-
-	if schedule.Id_sch == 0 {
-		common.SendError(w, http.StatusNotFound, fmt.Errorf(""))
-		return
-	}
-
-	json, _ := json.Marshal(schedule)
-	common.SendResponse(w, http.StatusOK, json)
+	return c.JSON(http.StatusOK, schedule)
 }
 
 //****************************************PARSER TIME
@@ -52,47 +30,45 @@ func saveSchedule(horary entity.Horary) (models.Horary, error) {
 	schedule.Departure = horary.Departure
 
 	db := common.GetConnection()
-	db.Save(&schedule)
+	err := db.Save(&schedule).Error
+	if err != nil {
+		return models.Horary{}, err
+	}
 	return schedule, nil
 }
 
-func SaveSchedule(w http.ResponseWriter, r *http.Request) {
+func SaveSchedule(c echo.Context) error {
 	requestBody := entity.Horary{}
-	error := json.NewDecoder(r.Body).Decode(&requestBody)
-	if error != nil {
-		common.SendError(w, http.StatusBadRequest, error.Error())
-		return
+	if err := c.Bind(&requestBody); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	schedule, err := saveSchedule(requestBody)
 	if err != nil {
-		common.SendError(w, http.StatusBadRequest, error)
-		return
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	json, _ := json.Marshal(schedule)
-	common.SendResponse(w, http.StatusOK, json)
+	return c.JSON(http.StatusCreated, schedule)
 }
 
-func DeleteSchedule(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+func DeleteSchedule(c echo.Context) error {
+	id := entity.Horary{}
+
+	if err := c.Bind(&id); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
 	db := common.GetConnection()
 
 	var schedule models.Horary
-	if err := db.First(&schedule, id).Error; err != nil {
+	if err := db.First(&schedule, id.Id_sch).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			w.WriteHeader(http.StatusNotFound)
-			return
+			return echo.NewHTTPError(http.StatusNotFound, "Schedule not found")
 		}
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	if err := db.Delete(&schedule).Error; err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-
-	w.WriteHeader(http.StatusNoContent)
+	return c.JSON(http.StatusOK, "Schedule deleted")
 }
