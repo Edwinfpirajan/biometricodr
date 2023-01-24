@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -15,10 +14,10 @@ func Login(c echo.Context) error {
 	db := common.GetConnection()
 
 	var user models.User
-	error := json.NewDecoder(c.Request().Body).Decode(&user)
+	// error := json.NewDecoder(c.Request().Body).Decode(&user)
 
 	if err := db.Table("admin_user").Where("email = ? and pass = ?", user.Email, user.Password).First(&user).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, error)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
