@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Edwinfpirajan/Distrifabrica.git/common"
+	"github.com/Edwinfpirajan/Distrifabrica.git/entity"
 	"github.com/Edwinfpirajan/Distrifabrica.git/models"
 	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -13,11 +14,25 @@ import (
 func Login(c echo.Context) error {
 	db := common.GetConnection()
 
-	var user models.User
-	// error := json.NewDecoder(c.Request().Body).Decode(&user)
+	admin := entity.Admin{}
+	err := c.Bind(&admin)
 
-	if err := db.Table("admin_user").Where("email = ? and pass = ?", user.Email, user.Password).First(&user).Error; err != nil {
+	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	var user models.User
+
+	if err := db.Table("admin_user").Where("email = ? and password = ?", admin.Email, admin.Password).Scan(&user).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if user.ID == 0 {
+		return echo.NewHTTPError(http.StatusNotFound, "Usuario o contraseña incorrecta")
+	}
+
+	if user.Password != admin.Password {
+		return echo.NewHTTPError(http.StatusNotFound, "Usuario o contraseña incorrecta")
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
