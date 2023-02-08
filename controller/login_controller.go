@@ -28,7 +28,7 @@ func Login(c echo.Context) error {
 	}
 
 	if user.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Usuario o contraseña incorrecta")
+		return echo.NewHTTPError(http.StatusNotFound, "Usuario o contraseña incorrectaa")
 	}
 
 	if user.Password != admin.Password {
