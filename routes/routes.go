@@ -22,6 +22,7 @@ func EchoRoutes(e *echo.Echo) {
 	// LOGIN
 
 	e.POST("/login", controller.Login)
+	e.POST("/logout", controller.Logout, common.OnlyAdmin)
 
 	// USER ROUTES
 

@@ -10,7 +10,7 @@ import (
 )
 
 func GetConnection() *gorm.DB {
-	dsn := "root:@/distridb?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "distriramirezcom_boreal:j87ns^6L7@/distriramirezcom_boreal?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -21,17 +21,3 @@ func GetConnection() *gorm.DB {
 
 	return db
 }
-
-// func Migrate() {
-// 	db := GetConnection()
-
-// 	log.Println("Iniciando...")
-
-// 	db.AutoMigrate(
-// 	// &models.Employe{},
-// 	// &models.Attendances{},
-// 	// &models.User{},
-// 	// &models.Account{},
-// 	// &models.Horary{},
-// 	)
-// }

@@ -126,7 +126,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
 		}
 		if validateAttendance.Departure != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'departure'")
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado salida")
 		}
 		validateAttendance.Departure = &timeNow
 		break
