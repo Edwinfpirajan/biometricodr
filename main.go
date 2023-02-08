@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/Edwinfpirajan/Distrifabrica.git/routes"
@@ -12,8 +13,9 @@ func main() {
 	e := echo.New()
 	routes.EchoRoutes(e)
 
-	port := os.Getenv("PORT")
+	PORT := os.Getenv("PORT")
+	HOST := os.Getenv("SERVER_HOST")
 
-	e.Logger.Fatal(e.Start(port))
+	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%d", HOST, PORT)))
 
 }
