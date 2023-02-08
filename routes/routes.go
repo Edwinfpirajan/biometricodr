@@ -9,8 +9,9 @@ import (
 
 func EchoRoutes(e *echo.Echo) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"*"},
+		AllowOrigins: []string{"https://distriramirez.com.co/"},
+		// AllowMethods: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		// AllowHeaders: []string{"*"},
 	}))
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
