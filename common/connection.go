@@ -3,7 +3,6 @@ package common
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,7 +10,8 @@ import (
 )
 
 func GetConnection() *gorm.DB {
-	dsn := os.Getenv("distriramirezcom_boreal:Developer2023++@tcp(107.6.54.56:3306)/distriramirezcom_boreal?charset=utf8mb4&parseTime=True&loc=Local")
+	dsn := "distriramirezcom_boreal:Developer2023++@tcp(107.6.54.56:3306)/distriramirezcom_boreal?charset=utf8mb4&parseTime=True&loc=Local"
+	// dsn := os.Getenv("distriramirezcom_boreal:Developer2023++@tcp(107.6.54.56:3306)/distriramirezcom_boreal?charset=utf8mb4&parseTime=True&loc=Local")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
