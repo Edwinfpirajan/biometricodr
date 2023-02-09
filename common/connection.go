@@ -3,7 +3,6 @@ package common
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,8 +10,8 @@ import (
 )
 
 func GetConnection() *gorm.DB {
-	// dsn := "MYSQL_URL"
-	dsn := os.Getenv("MYSQL_URL")
+	dsn := "mysql://root:vjGaLrgKEoNnaJKjwlr7@containers-us-west-118.railway.app:7762/railway"
+	// dsn := os.Getenv("MYSQL_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
