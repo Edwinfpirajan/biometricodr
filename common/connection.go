@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -21,7 +20,7 @@ func GetConnection() *gorm.DB {
 	})
 
 	if err != nil {
-		fmt.Println("Status:", http.StatusServiceUnavailable)
+		panic(err.Error())
 	}
 
 	return db
