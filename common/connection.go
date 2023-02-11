@@ -12,10 +12,10 @@ import (
 
 func GetConnection() *gorm.DB {
 	// dsn := "root:@/distridb?charset=utf8mb4&parseTime=True&loc=Local"
-	host := os.Getenv("MYSQLHOST")
 	pass := os.Getenv("MYSQLPASSWORD")
+	host := os.Getenv("MYSQLHOST")
 	port := os.Getenv("MYSQLPORT")
-	dsn := fmt.Sprintf("root:%s@tcp(%s:%s)/railway", host, pass, port)
+	dsn := fmt.Sprintf("root:%s@tcp(%s:%s)/railway", pass, host, port)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
