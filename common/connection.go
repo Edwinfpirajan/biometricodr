@@ -11,7 +11,7 @@ import (
 
 func GetConnection() *gorm.DB {
 	// dsn := "root:@/distridb?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn := "mysql://root:1zkzAauj8BwLeBjxyZiC@tcp(containers-us-west-148.railway.app:6027)/railway"
+	dsn := "root:1zkzAauj8BwLeBjxyZiC@tcp(containers-us-west-148.railway.app:6027)/railway"
 	// dsn := os.Getenv("MYSQL_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
