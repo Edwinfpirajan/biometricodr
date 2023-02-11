@@ -14,9 +14,10 @@ func main() {
 	e := echo.New()
 	routes.EchoRoutes(e)
 
+	// e.Logger.Fatal(e.Start(":8080"))
+
 	PORT, _ := strconv.Atoi(os.Getenv("PORT"))
 	HOST := os.Getenv("SERVER_HOST")
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%d", HOST, PORT)))
-
 }
