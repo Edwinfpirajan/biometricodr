@@ -46,8 +46,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 
 	block := validateAttendance.Arrival == nil
-	blockBreakEnd := validateAttendance.BreakEnd == nil
-	blockBreakOut := validateAttendance.BreakOut == nil
+	blockBreakInit := validateAttendance.BreakInit == nil
+	blockBreakIn := validateAttendance.BreakIn == nil
 
 	switch attendance.State {
 	case "arrival":
@@ -68,7 +68,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		if block {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
 		}
-		if blockBreakEnd {
+		if blockBreakInit {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a pausa primero")
 		}
 		if validateAttendance.BreakEnd != nil {
@@ -89,7 +89,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		if block {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
 		}
-		if blockBreakOut {
+		if blockBreakIn {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a almuerzo primero")
 		}
 		if validateAttendance.BreakOut != nil {
