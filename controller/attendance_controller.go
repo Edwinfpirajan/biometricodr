@@ -12,56 +12,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// func validateAttendance(pinEmploye string, state string) error {
-// 	db := common.GetConnection()
-// 	var validateAttendance models.Attendances
-// 	if err := db.Model(&validateAttendance).Where("pin_employe_fk = ? AND DATE(created_at) = CURDATE()", pinEmploye).Find(&validateAttendance).Error; err != nil {
-// 		return echo.NewHTTPError(http.StatusNotFound, "Register")
-// 	}
-
-// 	if validateAttendance.ID == 0 && state != "arrival" {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar el estado 'arrival' primero")
-// 	}
-
-// 	if state == "arrival" && validateAttendance.Arrival != nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'arrival'")
-// 	}
-
-// 	if state == "breakIn" && validateAttendance.BreakIn != nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'breakIn'")
-// 	}
-
-// 	if state == "breakOut" && validateAttendance.BreakOut != nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'breakOut'")
-// 	}
-
-//		if state == "departure" && validateAttendance.Departure != nil {
-//			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'departure'")
-//		}
-//		return nil
-//	}
-// func ValidateAttendance(c echo.Context) error {
-// 	id := c.Param("pin")
-
-// 	if id == "" {
-// 		return echo.NewHTTPError(http.StatusBadRequest, errors.New("El id es necesario"))
-// 	}
-
-// 	db := common.GetConnection()
-// 	var validateAttendance models.Attendances
-// 	if err := db.Model(&validateAttendance).Where("pin_employe_fk = ? AND DATE(created_at) = CURDATE()", id).Find(&validateAttendance).Error; err != nil {
-// 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-// 	}
-
-// 	if validateAttendance.BreakIn == nil && validateAttendance.Arrival == nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Tienes que marcar tu llegada primero")
-// 	} else if validateAttendance.BreakIn != nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'breakIn")
-// 	}
-
-// 	return nil
-// }
-
 func SaveRegisterAttendance(c echo.Context) error {
 	db := common.GetConnection()
 	var attendance entity.Attendance
@@ -96,12 +46,35 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 
 	block := validateAttendance.Arrival == nil
+	blockBreakEnd := validateAttendance.BreakEnd == nil
+	blockBreakOut := validateAttendance.BreakOut == nil
 
 	switch attendance.State {
 	case "arrival":
 		if validateAttendance.Arrival != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado 'arrival'")
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado entrada")
 		}
+		break
+	case "breakInit":
+		if block {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		}
+		if validateAttendance.BreakInit != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a pausa")
+		}
+		validateAttendance.BreakIn = &timeNow
+		break
+	case "breakEnd":
+		if block {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		}
+		if blockBreakEnd {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a pausa primero")
+		}
+		if validateAttendance.BreakEnd != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
+		}
+		validateAttendance.BreakIn = &timeNow
 		break
 	case "breakIn":
 		if block {
@@ -115,6 +88,9 @@ func SaveRegisterAttendance(c echo.Context) error {
 	case "breakOut":
 		if block {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		}
+		if blockBreakOut {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a almuerzo primero")
 		}
 		if validateAttendance.BreakOut != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada de almuerzo")
@@ -172,7 +148,6 @@ func ValidateHorary(c echo.Context) error {
 		validateHorary.PinEmployeFK, validateHorary.Date).Scan(&arrival)
 
 	return c.JSON(http.StatusOK, arrival)
-
 }
 
 func ValidateEmploye(c echo.Context) error {

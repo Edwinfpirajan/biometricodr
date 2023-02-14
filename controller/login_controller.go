@@ -21,7 +21,7 @@ func Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var user models.User
+	var user models.Admin
 
 	if err := db.Table("admin_user").Where("email = ? and password = ?", admin.Email, admin.Password).Scan(&user).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
