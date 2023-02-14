@@ -62,7 +62,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		if validateAttendance.BreakInit != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a pausa")
 		}
-		validateAttendance.BreakIn = &timeNow
+		validateAttendance.BreakInit = &timeNow
 		break
 	case "breakEnd":
 		if block {
@@ -74,7 +74,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		if validateAttendance.BreakEnd != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
 		}
-		validateAttendance.BreakIn = &timeNow
+		validateAttendance.BreakEnd = &timeNow
 		break
 	case "breakIn":
 		if block {
