@@ -47,6 +47,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 	block := validateAttendance.Arrival == nil
 	blockBreakInit := validateAttendance.BreakInit == nil
+	blockBreakInitTwo := validateAttendance.BreakInit == nil
 	blockBreakIn := validateAttendance.BreakIn == nil
 
 	switch attendance.State {
@@ -75,6 +76,27 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
 		}
 		validateAttendance.BreakEnd = &timeNow
+		break
+	case "breakInitTwo":
+		if block {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		}
+		if validateAttendance.BreakInitTwo != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a pausa")
+		}
+		validateAttendance.BreakInitTwo = &timeNow
+		break
+	case "breakEndTwo":
+		if block {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		}
+		if blockBreakInitTwo {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a pausa primero")
+		}
+		if validateAttendance.BreakEndTwo != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
+		}
+		validateAttendance.BreakEndTwo = &timeNow
 		break
 	case "breakIn":
 		if block {
