@@ -19,6 +19,10 @@ func EchoRoutes(e *echo.Echo) {
 
 	group := e.Group("/api")
 
+	// TEST
+
+	e.GET("/data", controller.GetAttendenceData)
+
 	// LOGIN
 
 	e.POST("/login", controller.Login)

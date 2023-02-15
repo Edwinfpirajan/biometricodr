@@ -21,3 +21,7 @@ type GetAllAttendances struct {
 	EmployeeWithSchedule
 	Attendances
 }
+
+type GetAttendanceData struct {
+	ID int `json:"id"`
+}
