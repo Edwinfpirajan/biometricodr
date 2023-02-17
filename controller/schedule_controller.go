@@ -13,6 +13,7 @@ import (
 func GetAllSchedule(c echo.Context) error {
 	schedule := []models.Horary{}
 	db := common.GetConnection()
+	defer common.CloseDB(db)
 	db.Find(&schedule)
 	return c.JSON(http.StatusOK, schedule)
 }
@@ -58,6 +59,7 @@ func DeleteSchedule(c echo.Context) error {
 	}
 
 	db := common.GetConnection()
+	defer common.CloseDB(db)
 
 	var schedule models.Horary
 	if err := db.First(&schedule, id.Id_sch).Error; err != nil {

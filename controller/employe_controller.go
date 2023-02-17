@@ -23,6 +23,7 @@ func GetEmploye(c echo.Context) error {
 
 	employeeWithSchedule := models.EmployeeWithSchedule{}
 	db := common.GetConnection()
+	defer common.CloseDB(db)
 
 	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Where("employes.id = ?", id).First(&employeeWithSchedule)
 
@@ -91,6 +92,7 @@ func GetEmploye(c echo.Context) error {
 func SaveEmploye(c echo.Context) error {
 	employe := entity.Employe{}
 	db := common.GetConnection()
+	defer common.CloseDB(db)
 	err := c.Bind(&employe)
 
 	if err != nil {
@@ -148,6 +150,7 @@ func DeleteEmploye(c echo.Context) error {
 
 	employee := models.Employe{}
 	db := common.GetConnection()
+	defer common.CloseDB(db)
 	db.Find(&employee, id)
 
 	if employee.ID > 0 {
