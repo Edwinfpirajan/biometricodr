@@ -23,13 +23,13 @@ func GetConnection() *gorm.DB {
 		panic("Failed connection")
 	}
 
-	defer func() {
-		dbSql, err := db.DB()
-		if err != nil {
-			panic(err)
-		}
-		dbSql.Close()
-	}()
+	// defer func() {
+	// 	dbSql, err := db.DB()
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	dbSql.Close()
+	// }()
 
 	return db
 }
