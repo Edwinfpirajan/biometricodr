@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -20,7 +21,7 @@ func GetConnection() *gorm.DB {
 	})
 
 	if err != nil {
-		panic(err.Error())
+		log.Print("Error")
 	}
 
 	return db
