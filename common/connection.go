@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -21,8 +20,16 @@ func GetConnection() *gorm.DB {
 	})
 
 	if err != nil {
-		log.Print("Error")
+		panic("Failed connection")
 	}
+
+	defer func() {
+		dbSql, err := db.DB()
+		if err != nil {
+			panic(err)
+		}
+		dbSql.Close()
+	}()
 
 	return db
 }
