@@ -13,7 +13,7 @@ import (
 func GetAllSchedule(c echo.Context) error {
 	schedule := []models.Horary{}
 	db := common.GetConnection()
-	defer common.CloseDB(&db)
+	defer common.CloseDB(db)
 	db.Find(&schedule)
 	return c.JSON(http.StatusOK, schedule)
 }
@@ -31,7 +31,7 @@ func saveSchedule(horary entity.Horary) (models.Horary, error) {
 	schedule.Departure = horary.Departure
 
 	db := common.GetConnection()
-	defer common.CloseDB(&db)
+	defer common.CloseDB(db)
 	err := db.Save(&schedule).Error
 	if err != nil {
 		return models.Horary{}, err
@@ -60,7 +60,7 @@ func DeleteSchedule(c echo.Context) error {
 	}
 
 	db := common.GetConnection()
-	defer common.CloseDB(&db)
+	defer common.CloseDB(db)
 
 	var schedule models.Horary
 	if err := db.First(&schedule, id.Id_sch).Error; err != nil {
