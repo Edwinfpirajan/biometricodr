@@ -143,7 +143,7 @@ func GetAllAttendance(c echo.Context) error {
 
 	attendance := []models.GetAllAttendances{}
 
-	common.DB.Table("attendances").Select("*").Joins("INNER JOIN employes e on e.pin_employe = attendances.pin_employe_fk").Find(&attendance)
+	common.DB.Table("attendances a").Select("e.first_name, e.last_name, a.* ").Joins("INNER JOIN employes e on e.pin_employe = a.pin_employe_fk").Find(&attendance)
 
 	return c.JSON(http.StatusOK, attendance)
 }
