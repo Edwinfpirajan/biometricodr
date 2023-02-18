@@ -13,8 +13,8 @@ import (
 
 func GetAll(c echo.Context) error {
 	employeesWithSchedule := []models.EmployeeWithSchedule{}
-	db := common.GetConnection()
-	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Scan(&employeesWithSchedule)
+
+	common.DB.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Scan(&employeesWithSchedule)
 	return c.JSON(http.StatusOK, employeesWithSchedule)
 }
 
@@ -22,9 +22,8 @@ func GetEmploye(c echo.Context) error {
 	id := c.Param("id")
 
 	employeeWithSchedule := models.EmployeeWithSchedule{}
-	db := common.GetConnection()
 
-	db.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Where("employes.id = ?", id).First(&employeeWithSchedule)
+	common.DB.Table("employes").Select("*").Joins("left join horaries h on h.id_sch = employes.schedule_id").Where("employes.id = ?", id).First(&employeeWithSchedule)
 
 	if employeeWithSchedule.ID == 0 {
 		return echo.NewHTTPError(http.StatusNotFound, "Employee not found")
@@ -35,7 +34,7 @@ func GetEmploye(c echo.Context) error {
 
 // func SaveEmploye(c echo.Context) error {
 // 	employe := entity.Employe{}
-// 	db := common.GetConnection()
+//
 // 	err := c.Bind(&employe)
 
 // 	if err != nil {
@@ -44,7 +43,7 @@ func GetEmploye(c echo.Context) error {
 
 // 	employeFromDb := models.Employe{}
 
-// 	db.Table("employes").Where("employes.pin_employe = ?", employe.PinEmploye).Scan(&employeFromDb)
+// 	common.DB.Table("employes").Where("employes.pin_employe = ?", employe.PinEmploye).Scan(&employeFromDb)
 
 // 	if employeFromDb.ID == 0 {
 
@@ -73,7 +72,7 @@ func GetEmploye(c echo.Context) error {
 // 		employeFromDb.Position = employe.LastName
 // 		employeFromDb.ScheduleId = employe.ScheduleId
 
-// 		db.Save(&employeFromDb)
+// 		common.DB.Save(&employeFromDb)
 
 // 	} else {
 // 		employeFromDb.FirstName = employe.FirstName
@@ -82,7 +81,7 @@ func GetEmploye(c echo.Context) error {
 // 		employeFromDb.Position = employe.LastName
 // 		employeFromDb.ScheduleId = employe.ScheduleId
 
-// 		db.Save(&employeFromDb)
+// 		common.DB.Save(&employeFromDb)
 // 	}
 
 // 	return c.JSON(http.StatusCreated, employe)
@@ -90,7 +89,7 @@ func GetEmploye(c echo.Context) error {
 
 func SaveEmploye(c echo.Context) error {
 	employe := entity.Employe{}
-	db := common.GetConnection()
+
 	err := c.Bind(&employe)
 
 	if err != nil {
@@ -99,7 +98,7 @@ func SaveEmploye(c echo.Context) error {
 
 	employeFromDb := models.Employe{}
 
-	db.Table("employes").Where("employes.pin_employe = ?", employe.PinEmploye).Scan(&employeFromDb)
+	common.DB.Table("employes").Where("employes.pin_employe = ?", employe.PinEmploye).Scan(&employeFromDb)
 
 	if employeFromDb.ID == 0 {
 
@@ -128,7 +127,7 @@ func SaveEmploye(c echo.Context) error {
 		employeFromDb.Position = employe.Position
 		employeFromDb.ScheduleId = employe.ScheduleId
 
-		db.Save(&employeFromDb)
+		common.DB.Save(&employeFromDb)
 
 	} else {
 		employeFromDb.FirstName = employe.FirstName
@@ -137,7 +136,7 @@ func SaveEmploye(c echo.Context) error {
 		employeFromDb.Position = employe.Position
 		employeFromDb.ScheduleId = employe.ScheduleId
 
-		db.Save(&employeFromDb)
+		common.DB.Save(&employeFromDb)
 	}
 
 	return c.JSON(http.StatusCreated, employe)
@@ -147,11 +146,11 @@ func DeleteEmploye(c echo.Context) error {
 	id := c.Param("id")
 
 	employee := models.Employe{}
-	db := common.GetConnection()
-	db.Find(&employee, id)
+
+	common.DB.Find(&employee, id)
 
 	if employee.ID > 0 {
-		db.Delete(employee)
+		common.DB.Delete(employee)
 		return c.JSON(http.StatusOK, employee)
 	} else {
 		return echo.NewHTTPError(http.StatusNotFound, "Employee not found")

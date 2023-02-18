@@ -12,8 +12,7 @@ import (
 
 func GetAllSchedule(c echo.Context) error {
 	schedule := []models.Horary{}
-	db := common.GetConnection()
-	db.Find(&schedule)
+	common.DB.Find(&schedule)
 	return c.JSON(http.StatusOK, schedule)
 }
 
@@ -29,8 +28,7 @@ func saveSchedule(horary entity.Horary) (models.Horary, error) {
 
 	schedule.Departure = horary.Departure
 
-	db := common.GetConnection()
-	err := db.Save(&schedule).Error
+	err := common.DB.Save(&schedule).Error
 	if err != nil {
 		return models.Horary{}, err
 	}
@@ -57,17 +55,15 @@ func DeleteSchedule(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	db := common.GetConnection()
-
 	var schedule models.Horary
-	if err := db.First(&schedule, id.Id_sch).Error; err != nil {
+	if err := common.DB.First(&schedule, id.Id_sch).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return echo.NewHTTPError(http.StatusNotFound, "Schedule not found")
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	if err := db.Delete(&schedule).Error; err != nil {
+	if err := common.DB.Delete(&schedule).Error; err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, "Schedule deleted")

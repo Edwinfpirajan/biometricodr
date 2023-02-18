@@ -13,8 +13,8 @@ type Attendances struct {
 	BreakIn      *time.Time `json:"breakIn"`
 	BreakOut     *time.Time `json:"breakOut"`
 	Departure    *time.Time `json:"departure"`
-	// CreatedAt    time.Time  `json:"date"`
-	Photo string `json:"photo"`
+	CreatedAt    time.Time  `json:"date"`
+	Photo        string     `json:"photo"`
 }
 
 type GetAllAttendances struct {

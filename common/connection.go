@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func GetConnection() *gorm.DB {
+var DB *gorm.DB = getConnection()
+
+func getConnection() *gorm.DB {
 	// dsn := "root:@/distridb"
 	pass := os.Getenv("MYSQLPASSWORD")
 	host := os.Getenv("MYSQLHOST")
@@ -22,6 +25,8 @@ func GetConnection() *gorm.DB {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	log.Info("Connection Successfully to Mysql")
 
 	return db
 }

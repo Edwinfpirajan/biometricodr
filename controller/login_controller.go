@@ -12,8 +12,6 @@ import (
 )
 
 func Login(c echo.Context) error {
-	db := common.GetConnection()
-
 	admin := entity.Admin{}
 	err := c.Bind(&admin)
 
@@ -23,7 +21,7 @@ func Login(c echo.Context) error {
 
 	var user models.Admin
 
-	if err := db.Table("admin_user").Where("email = ? and password = ?", admin.Email, admin.Password).Scan(&user).Error; err != nil {
+	if err := common.DB.Table("admin_user").Where("email = ? and password = ?", admin.Email, admin.Password).Scan(&user).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
