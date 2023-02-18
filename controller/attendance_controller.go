@@ -179,6 +179,8 @@ func ValidateHorary(c echo.Context) error {
 func ValidateEmploye(c echo.Context) error {
 	id := c.Param("pin")
 	db := common.GetConnection()
+	defer common.CloseDB(db)
+
 
 	var employe models.Employe
 	if err := db.Table("employes").Where("pin_employe = ?", id).Scan(&employe).Error; err != nil {
