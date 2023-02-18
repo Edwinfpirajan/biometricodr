@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -14,7 +15,6 @@ import (
 
 func SaveRegisterAttendance(c echo.Context) error {
 	db := common.GetConnection()
-	
 
 	var attendance entity.Attendance
 	err := c.Bind(&attendance)
@@ -28,6 +28,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
 	timeNow := time.Now()
+	fmt.Println(timeNow)
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 {
@@ -143,7 +144,6 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 func GetAllAttendance(c echo.Context) error {
 	db := common.GetConnection()
-	
 	attendance := []models.GetAllAttendances{}
 
 	db.Table("attendances").Select("*").Joins("INNER JOIN employes e on e.pin_employe = attendances.pin_employe_fk").Find(&attendance)
@@ -155,7 +155,6 @@ func GetAllAttendance(c echo.Context) error {
 
 func ValidateHorary(c echo.Context) error {
 	db := common.GetConnection()
-	
 
 	body, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
@@ -179,8 +178,6 @@ func ValidateHorary(c echo.Context) error {
 func ValidateEmploye(c echo.Context) error {
 	id := c.Param("pin")
 	db := common.GetConnection()
-	
-
 
 	var employe models.Employe
 	if err := db.Table("employes").Where("pin_employe = ?", id).Scan(&employe).Error; err != nil {
