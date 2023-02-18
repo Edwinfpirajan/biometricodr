@@ -14,7 +14,7 @@ import (
 
 func SaveRegisterAttendance(c echo.Context) error {
 	db := common.GetConnection()
-	defer common.CloseDB(db)
+	defer common.CloseDB(&db)
 
 	var attendance entity.Attendance
 	err := c.Bind(&attendance)
@@ -155,7 +155,7 @@ func GetAllAttendance(c echo.Context) error {
 
 func ValidateHorary(c echo.Context) error {
 	db := common.GetConnection()
-	defer common.CloseDB(db)
+	defer common.CloseDB(&db)
 
 	body, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
@@ -179,7 +179,7 @@ func ValidateHorary(c echo.Context) error {
 func ValidateEmploye(c echo.Context) error {
 	id := c.Param("pin")
 	db := common.GetConnection()
-	defer common.CloseDB(db)
+	defer common.CloseDB(&db)
 
 
 	var employe models.Employe
