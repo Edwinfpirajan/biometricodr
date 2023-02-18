@@ -13,7 +13,6 @@ import (
 
 func Login(c echo.Context) error {
 	db := common.GetConnection()
-	defer common.CloseDB(db)
 
 	admin := entity.Admin{}
 	err := c.Bind(&admin)
