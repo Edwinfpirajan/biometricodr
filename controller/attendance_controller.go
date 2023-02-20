@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -26,6 +27,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 	location, _ := time.LoadLocation("America/Bogota")
 	timeNow := time.Now().In(location)
+
+	fmt.Println(timeNow)
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
