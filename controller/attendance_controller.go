@@ -27,6 +27,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 	location, _ := time.LoadLocation("America/Bogota")
 	timeNow := time.Now().In(location)
+	// restTimeNow := timeNow
 
 	fmt.Println(timeNow)
 
@@ -37,6 +38,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 				Photo:        attendance.Photo,
 				Arrival:      &timeNow,
 			}
+
+			fmt.Println(modelsAttendance)
 
 			err = common.DB.Save(&modelsAttendance).Error
 			if err != nil {
@@ -132,6 +135,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 		validateAttendance.Departure = &timeNow
 		break
 	}
+
+	fmt.Println(validateAttendance)
 
 	err = common.DB.Save(&validateAttendance).Error
 	if err != nil {
