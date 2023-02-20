@@ -24,8 +24,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 	if err := common.DB.Model(&validateAttendance).Where("pin_employe_fk = ? AND DATE(created_at) = CURDATE()", attendance.PinEmployeFK).Scan(&validateAttendance).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
-	//location, _ := time.LoadLocation("America/Bogota")
-	timeNow := time.Now() /*.In(location)*/
+	location, _ := time.LoadLocation("America/Bogota")
+	timeNow := time.Now().In(location)
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
