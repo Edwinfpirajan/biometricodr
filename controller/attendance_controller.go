@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -27,9 +26,6 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 	location, _ := time.LoadLocation("America/Bogota")
 	timeNow := time.Now().In(location)
-	// restTimeNow := timeNow
-
-	fmt.Println(timeNow)
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
@@ -37,11 +33,10 @@ func SaveRegisterAttendance(c echo.Context) error {
 				PinEmployeFK: attendance.PinEmployeFK,
 				Photo:        attendance.Photo,
 				Arrival:      &timeNow,
+				CreatedAt:    timeNow,
 			}
 
-			fmt.Println(modelsAttendance)
-
-			err = common.DB.Save(&modelsAttendance).Error
+			err = common.DB.Create(&modelsAttendance).Error
 			if err != nil {
 				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 			}
@@ -136,9 +131,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		break
 	}
 
-	fmt.Println(validateAttendance)
-
-	err = common.DB.Save(&validateAttendance).Error
+	err = common.DB.Updates(&validateAttendance).Error
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
