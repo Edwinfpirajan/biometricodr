@@ -25,9 +25,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 	if err := common.DB.Model(&validateAttendance).Where("pin_employe_fk = ? AND DATE(created_at) = CURDATE()", attendance.PinEmployeFK).Scan(&validateAttendance).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
-	location, _ := time.LoadLocation("America/Bogota")
-	timeNow := time.Now().In(location)
-	// restTimeNow := timeNow
+	//location, _ := time.LoadLocation("America/Bogota")
+	timeNow := time.Now() /*.In(location)*/
 
 	fmt.Println(timeNow)
 
@@ -37,11 +36,10 @@ func SaveRegisterAttendance(c echo.Context) error {
 				PinEmployeFK: attendance.PinEmployeFK,
 				Photo:        attendance.Photo,
 				Arrival:      &timeNow,
+				CreatedAt:    timeNow,
 			}
 
-			fmt.Println(modelsAttendance)
-
-			err = common.DB.Save(&modelsAttendance).Error
+			err = common.DB.Create(&modelsAttendance).Error
 			if err != nil {
 				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 			}
@@ -136,9 +134,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		break
 	}
 
-	fmt.Println(validateAttendance)
-
-	err = common.DB.Save(&validateAttendance).Error
+	err = common.DB.Updates(&validateAttendance).Error
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
